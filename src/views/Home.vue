@@ -22,6 +22,9 @@
           <input type="text" placeholder="type your email here" v-model="email" >
           <div class="submit-button" @click="onSubscribe"></div>
         </div>
+        <div class="error-message">
+          <div v-for="(message, i) in formMessage" :key="i">{{message}}</div>
+        </div>
         <div class="terms-of-use">
           <div class="checkbox-wrapper" @click="onAgreeToTerms">
             <div class="checkbox-unchecked" v-bind:class="{'checkbox-checked': agreeToTerms }" ></div>
@@ -82,12 +85,27 @@ export default {
       fb: false,
       inst: false,
       tw: false,
-      yout: false
+      yout: false,
+      formMessage: []
     }
   },
   methods: {
     onSubscribe () {
-      console.log(this.email)
+      // debugger
+      this.formMessage = []
+      // unmarked checkbox
+      // no email at all
+      if (this.email.length < 6) {
+        this.formMessage.push('Please provide email address.')
+      } else {
+        // check email validity simple string@string.string pattern
+        const reValidity = /\S+@\S+\.\S+/
+        reValidity.test(this.email) ? this.formMessage.push('') : this.formMessage.push('Please provide valid email.')
+        // do not accept .co emails
+        const reColombia = /\S+@\S+.io/
+        reColombia.test(this.email) ? this.formMessage.push('We do not accept emails from Colombia domains') : this.formMessage.push()
+      }
+      this.agreeToTerms ? this.formMessage.push() : this.formMessage.push('You must agree on terms of service')
     },
     onAgreeToTerms () {
       this.agreeToTerms = !this.agreeToTerms
@@ -163,7 +181,7 @@ export default {
   }
 }
 .centerpiece {
-  border: 3px solid red;
+  //
 }
 .content-wrapper {
   padding-left: 15%;
@@ -181,7 +199,12 @@ export default {
   display: flex;
   justify-content: right;
   width: 42vw;
-  margin-bottom: 16%;
+  margin-bottom: 3%;
+}
+.error-message {
+  margin-bottom: 12%;
+  color: #CC0000;
+  margin-left: 5%;
 }
 .subscribe-form-wrapper input {
   border: none;
@@ -387,6 +410,15 @@ export default {
     background-position: center;
     background-attachment: fixed;
     background-size: cover;
+  }
+  .centerpiece {
+    width: 85vw;
+    margin-left: 7%;
+    background-color: $light-blue;
+    padding: 20px 0 20px 0;
+  }
+  .subscribe-form-wrapper {
+    width: 95%;
   }
 }
 </style>
