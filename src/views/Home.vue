@@ -87,45 +87,38 @@ export default {
       inst: false,
       tw: false,
       yout: false,
-      formMessage: [],
-      submitAllowed: false
+      formMessage: []
     }
   },
   methods: {
     onSubscribe () {
-      if (!this.submitAllowed) {
-        this.formMessage.push('sdf sdfsdf sdfsdf')
-      } else {
-        const _this = this
-        // get email provider
-        const provider = this.email.substring(this.email.indexOf('@'))
-        const today = new Date()
-        const year = today.getFullYear()
-        const month = today.getMonth()
-        const day = today.getDate()
-        this.formMessage = []
-        // unmarked checkbox
-        // no email at all
-        if (this.email.length < 6) {
-          this.formMessage.push('Please provide email address.')
-        } else {
-          // check email validity simple string@string.string pattern
-          const reValidity = /\S+@\S+\.\S+/
-          if (!reValidity.test(this.email)) {
-            this.formMessage.push('Please provide valid email.')
-          }
-          // do not accept .co emails
-          const reColombia = /\S+@\S+.io/
-          if (reColombia.test(this.email)) {
-            this.formMessage.push('We do not accept emails from Colombia domains')
-          }
-          if (!this.agreeToTerms) {
-            this.formMessage.push('You must agree on terms of service')
-          }
-        }
-        if (this.formMessage.length === 0) {
-          this.formMessage.push('Form successfully submited')
-        }
+      const _this = this
+      // get email provider
+      const provider = this.email.substring(this.email.indexOf('@'))
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = today.getMonth()
+      const day = today.getDate()
+      this.formMessage = []
+      // unmarked checkbox
+      // no email at all
+      if (this.email.length < 6) {
+        this.formMessage.push('Please provide email address.')
+      }
+      // check email validity simple string@string.string pattern
+      const reValidity = /\S+@\S+\.\S+/
+      if (!reValidity.test(this.email)) {
+        this.formMessage.push('Please provide valid email.')
+      }
+      // do not accept .co emails
+      const reColombia = /\S+@\S+.io/
+      if (reColombia.test(this.email)) {
+        this.formMessage.push('We do not accept emails from Colombia domains')
+      }
+      if (!this.agreeToTerms) {
+        this.formMessage.push('You must agree on terms of service')
+      }
+      if (this.formMessage.length === 0) {
         axios({
           method: 'post',
           url: 'http://localhost:8082/save-email',
@@ -141,6 +134,7 @@ export default {
         })
           .then(r => {
             console.log(r.data)
+            this.formMessage.push('Form successfully submited')
           })
           .catch(e => {
             console.log(e)
@@ -184,9 +178,6 @@ export default {
   width: 100%;
   height: 100%;
 }
-.base-image img {
-  // max-height: 100vh;
-}
 .header-wrapper {
   display: flex;
   justify-content: space-between;
@@ -214,9 +205,6 @@ export default {
     color: $blue;
     font-weight: bold;
   }
-}
-.centerpiece {
-  //
 }
 .content-wrapper {
   padding-left: 15%;
