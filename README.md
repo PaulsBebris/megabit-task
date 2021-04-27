@@ -1,11 +1,9 @@
 # web-test
 0. Prepare MariaSQL (MySQL)
   DROP DATABASE IF EXISTS webtask;
-  DROP USER IF EXISTS 'task'@localhost;
-  DROP USER IF EXISTS 'task'@localhost;
-
   CREATE DATABASE webtask;
   USE webtask;
+  DROP USER IF EXISTS 'task'@localhost;
   CREATE USER 'task'@localhost IDENTIFIED BY 'task';
   GRANT ALL PRIVILEGES ON task.* TO 'task'@localhost;
   FLUSH PRIVILEGES;
