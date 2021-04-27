@@ -1,9 +1,4 @@
-.DS_Store
-node_modules
 /dist
-.history
-
-
 
 # local env files
 .env.local
@@ -16,6 +11,9 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Editor directories and files
+.DS_Store
+node_modules
+.history
 .idea
 .vscode
 *.suo

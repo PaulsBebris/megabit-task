@@ -87,60 +87,65 @@ export default {
       inst: false,
       tw: false,
       yout: false,
-      formMessage: []
+      formMessage: [],
+      submitAllowed: false
     }
   },
   methods: {
     onSubscribe () {
-      const _this = this
-      // get email provider
-      const provider = this.email.substring(this.email.indexOf('@'))
-      const today = new Date()
-      const year = today.getFullYear()
-      const month = today.getMonth()
-      const day = today.getDate()
-      this.formMessage = []
-      // unmarked checkbox
-      // no email at all
-      if (this.email.length < 6) {
-        this.formMessage.push('Please provide email address.')
+      if (!this.submitAllowed) {
+        this.formMessage.push('sdf sdfsdf sdfsdf')
       } else {
-        // check email validity simple string@string.string pattern
-        const reValidity = /\S+@\S+\.\S+/
-        if (!reValidity.test(this.email)) {
-          this.formMessage.push('Please provide valid email.')
+        const _this = this
+        // get email provider
+        const provider = this.email.substring(this.email.indexOf('@'))
+        const today = new Date()
+        const year = today.getFullYear()
+        const month = today.getMonth()
+        const day = today.getDate()
+        this.formMessage = []
+        // unmarked checkbox
+        // no email at all
+        if (this.email.length < 6) {
+          this.formMessage.push('Please provide email address.')
+        } else {
+          // check email validity simple string@string.string pattern
+          const reValidity = /\S+@\S+\.\S+/
+          if (!reValidity.test(this.email)) {
+            this.formMessage.push('Please provide valid email.')
+          }
+          // do not accept .co emails
+          const reColombia = /\S+@\S+.io/
+          if (reColombia.test(this.email)) {
+            this.formMessage.push('We do not accept emails from Colombia domains')
+          }
+          if (!this.agreeToTerms) {
+            this.formMessage.push('You must agree on terms of service')
+          }
         }
-        // do not accept .co emails
-        const reColombia = /\S+@\S+.io/
-        if (reColombia.test(this.email)) {
-          this.formMessage.push('We do not accept emails from Colombia domains')
+        if (this.formMessage.length === 0) {
+          this.formMessage.push('Form successfully submited')
         }
-        if (!this.agreeToTerms) {
-          this.formMessage.push('You must agree on terms of service')
-        }
-      }
-      if (this.formMessage.length === 0) {
-        this.formMessage.push('Form successfully submited')
-      }
-      axios({
-        method: 'post',
-        url: 'http://localhost:8082/save-email',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-origin': '*'
-        },
-        data: {
-          email: _this.email,
-          provider: provider,
-          registerdate: year + '-' + month + '-' + day
-        }
-      })
-        .then(r => {
-          console.log(r.data)
+        axios({
+          method: 'post',
+          url: 'http://localhost:8082/save-email',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-origin': '*'
+          },
+          data: {
+            email: _this.email,
+            provider: provider,
+            registerdate: year + '-' + month + '-' + day
+          }
         })
-        .catch(e => {
-          console.log(e)
-        })
+          .then(r => {
+            console.log(r.data)
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      }
     },
     onAgreeToTerms () {
       this.agreeToTerms = !this.agreeToTerms
