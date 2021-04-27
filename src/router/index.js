@@ -9,6 +9,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/email-list',
+    name: 'emailList',
+    component: () => import(/* webpackChunkName: "emailList" */ '../views/admin/EmailList.vue')
   }
 ]
 

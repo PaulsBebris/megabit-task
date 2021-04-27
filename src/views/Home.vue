@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import sommer from '@/assets/img/sommer.png'
 
 export default {
@@ -91,7 +92,13 @@ export default {
   },
   methods: {
     onSubscribe () {
-      // debugger
+      const _this = this
+      // get email provider
+      const provider = this.email.substring(this.email.indexOf('@'))
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = today.getMonth()
+      const day = today.getDate()
       this.formMessage = []
       // unmarked checkbox
       // no email at all
@@ -100,12 +107,40 @@ export default {
       } else {
         // check email validity simple string@string.string pattern
         const reValidity = /\S+@\S+\.\S+/
-        reValidity.test(this.email) ? this.formMessage.push('') : this.formMessage.push('Please provide valid email.')
+        if (!reValidity.test(this.email)) {
+          this.formMessage.push('Please provide valid email.')
+        }
         // do not accept .co emails
         const reColombia = /\S+@\S+.io/
-        reColombia.test(this.email) ? this.formMessage.push('We do not accept emails from Colombia domains') : this.formMessage.push()
+        if (reColombia.test(this.email)) {
+          this.formMessage.push('We do not accept emails from Colombia domains')
+        }
+        if (!this.agreeToTerms) {
+          this.formMessage.push('You must agree on terms of service')
+        }
       }
-      this.agreeToTerms ? this.formMessage.push() : this.formMessage.push('You must agree on terms of service')
+      if (this.formMessage.length === 0) {
+        this.formMessage.push('Form successfully submited')
+      }
+      axios({
+        method: 'post',
+        url: 'http://localhost:8082/save-email',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-origin': '*'
+        },
+        data: {
+          email: _this.email,
+          provider: provider,
+          registerdate: year + '-' + month + '-' + day
+        }
+      })
+        .then(r => {
+          console.log(r.data)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     },
     onAgreeToTerms () {
       this.agreeToTerms = !this.agreeToTerms
@@ -134,10 +169,6 @@ export default {
 @import "../assets/scss/defaults.scss";
 .home {
   display: flex;
-  // width: 680px;
-  // height: 100vh;
-  // color: $blue;
-  // overflow: hidden;
 }
 .page-wrapper {
   width: 40vw;
@@ -171,7 +202,6 @@ export default {
   margin-right: 5%;
   display: flex;
   justify-content: flex-end;
-  width: 33%;
 }
 .main-menu__item {
   margin-right: 10px;
@@ -202,6 +232,7 @@ export default {
   margin-bottom: 3%;
 }
 .error-message {
+  padding-left: px;
   margin-bottom: 12%;
   color: #CC0000;
   margin-left: 5%;
@@ -235,7 +266,6 @@ export default {
     background-image: url('../assets/img/ic_arrow_h.svg');
   }
 }
-
 .terms-of-use {
   display: flex;
   margin-left: 15%;
@@ -325,13 +355,6 @@ export default {
   align-items: center;
   margin-right: 15px;
 }
-/*
-*
-*
-*
-*
-*
-*/
 .facebook-wrapper:hover{
   background-color: #4267B2;
   box-shadow: 0px 0px 3px #131821;
@@ -360,7 +383,6 @@ export default {
     fill: #FFF;
   }
 }
-
 .facebook-wrapper-click {
   background-color: #2F4A80;
   svg {
@@ -385,18 +407,6 @@ export default {
     fill: #FFF;
   }
 }
-
-/*
-*
-*
-*
-*
-
-*
-*
-*
-*/
-
 // mobile
 @media screen and (max-width: 1024px) {
   .base-image {

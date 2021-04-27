@@ -1,24 +1,12 @@
 # web-test
 
-## Project setup
-```
+1. Project setup. From project root directory run:
+
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+2. Start-up development server
+npm run serve -- --port 8081
 
-### Compiles and minifies for production
-```
-npm run build
-```
+3. Start PHP dev server for API to work
+php -S 127.0.0.1:8082
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
